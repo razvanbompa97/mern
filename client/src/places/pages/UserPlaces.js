@@ -19,7 +19,12 @@ const UserPlaces = () => {
         );
 
         setUserPlaces(responseData.places);
-      } catch (err) {}
+      } catch (err) {
+        if (err.message === 'Could not find places for the provided user id') {
+          clearError();
+          setUserPlaces([]);
+        }
+      }
     };
 
     fetchPlaces();
@@ -33,13 +38,13 @@ const UserPlaces = () => {
 
   return (
     <React.Fragment>
-      <ErrorModal error={error} onClear={clearError} />
+      {error && <ErrorModal error={error} onClear={clearError} />}
       {isLoading && (
         <div className="center">
           <LoadingSpinner />
         </div>
       )}
-      {userPlaces && (
+      {!isLoading && userPlaces && (
         <PlaceList items={userPlaces} onDeletePlace={placeDeletedHandler} />
       )}
     </React.Fragment>
